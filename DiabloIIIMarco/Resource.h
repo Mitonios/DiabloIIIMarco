@@ -3,7 +3,6 @@
 // Used by DiabloIIIMarco.rc
 //
 #define IDM_ABOUTBOX                    0x0010
-#define IDD_ABOUTBOX                    100
 #define IDS_ABOUTBOX                    101
 #define IDD_DIABLOIIIMARCO_DIALOG       102
 #define IDR_MAINFRAME                   128
