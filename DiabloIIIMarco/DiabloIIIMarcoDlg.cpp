@@ -6,6 +6,7 @@
 #include "DiabloIIIMarco.h"
 #include "DiabloIIIMarcoDlg.h"
 #include "afxdialogex.h"
+#include <Windows.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -22,6 +23,8 @@ struct MyConfig
 	int		skill02Enable;
 	int		skill03Enable;
 	int		skill04Enable;
+
+
 };
 
 /************************************************************************/
@@ -39,11 +42,166 @@ int						skillSlot01Cooldown;
 int						skillSlot02Cooldown;
 int						skillSlot03Cooldown;
 int						skillSlot04Cooldown;
+wchar_t					keySKill01 = 0x31;
+wchar_t					keySKill02 = 0x32;
+wchar_t					keySKill03 = 0x33;
+wchar_t					keySKill04 = 0x34;
 HHOOK					hGlobalHook;
+
+bool		IsD3WindowActive(void)
+{
+	HWND		currentHWD = GetForegroundWindow();
+	if (currentHWD)
+	{
+		wchar_t		buffer[1024] = { 0 };
+		GetWindowTextW(currentHWD, buffer, 1023);
+		if (wcscmp(buffer, L"Diablo III") == 0)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+HWND		GetD3Windows(void)
+{
+	return FindWindowW(L"D3 Main Window Class", L"Diablo III");
+	//return FindWindowW(L"Notepad", L"Untitled - Notepad");
+}
+void		SendD3Key(int keyCode)
+{
+	HWND d3Wnd = GetD3Windows();
+	if (d3Wnd)
+	{
+		TRACE("Send Key \r\n");
+		SendMessage(d3Wnd, WM_KEYDOWN, keyCode, 0);
+		Sleep(5 + (rand() % 3));
+		SendMessage(d3Wnd, WM_KEYUP, keyCode, 0);
+		Sleep(5 + (rand() % 3));
+	}
+}
+void		SetD3Mouse(int x, int y)
+{
+	HWND d3Wnd = GetD3Windows();
+	if (d3Wnd)
+	{
+		RECT d3Rect = { 0 };
+		GetWindowRect(d3Wnd, &d3Rect);
+		SetCursorPos(d3Rect.left + x, d3Rect.top + y);
+	}
+}
+void		SendD3LeftMouseClick()
+{
+	HWND d3Wnd = GetD3Windows();
+	if (d3Wnd)
+	{
+		POINT point = { 0 };
+		GetCursorPos(&point);
+
+		RECT d3Rect = { 0 };
+		GetWindowRect(d3Wnd, &d3Rect);
+
+		LPARAM lParam = (point.x - d3Rect.left) | ((point.y - d3Rect.top) << 16);
+
+		SendMessage(d3Wnd, WM_LBUTTONDOWN, MK_LBUTTON, lParam);
+		Sleep(5 + (rand() % 3));
+		SendMessage(d3Wnd, WM_LBUTTONUP, 0, lParam);
+		Sleep(5 + (rand() % 3));
+	}
+}
+void		SendD3RightMouseClick()
+{
+	HWND d3Wnd = GetD3Windows();
+	if (d3Wnd)
+	{
+		POINT point = { 0 };
+		GetCursorPos(&point);
+
+		RECT d3Rect = { 0 };
+		GetWindowRect(d3Wnd, &d3Rect);
+
+		LPARAM lParam = (point.x - d3Rect.left) | ((point.y - d3Rect.top) << 16);
+
+		SendMessage(d3Wnd, WM_RBUTTONDOWN, MK_RBUTTON, lParam);
+		Sleep(5 + (rand() % 3));
+		SendMessage(d3Wnd, WM_RBUTTONUP, 0, lParam);
+		Sleep(5 + (rand() % 3));
+	}
+}
+bool		PointInRect(POINT point, int rLeft, int rRight, int rTop, int rBottom)
+{
+	if (rLeft >= rRight || rTop >= rBottom)
+	{
+		MessageBox(0, L"D3 Engine Error!!", L"(rLeft <= rRight || rTop <= rBottom)", MB_OK);
+	}
+	return (point.x > rLeft && point.x < rRight && point.y > rTop && point.y < rBottom);
+}
+
+bool		ValidToSendD3Click(void)
+{
+	if (IsD3WindowActive())
+	{
+		HWND d3Wnd = GetD3Windows();
+		if (d3Wnd)
+		{
+			RECT d3Rect = { 0 };
+			GetWindowRect(d3Wnd, &d3Rect);
+			if (d3Rect.right > d3Rect.left && d3Rect.bottom > d3Rect.top)
+			{
+				POINT point = { 0 };
+				GetCursorPos(&point);
+				if (PointInRect(point, d3Rect.left, d3Rect.right, d3Rect.top, d3Rect.bottom))
+				{
+					if (d3Rect.right - d3Rect.left == 1920 && d3Rect.bottom - d3Rect.top == 1080)
+					{
+						//chat button
+						if (PointInRect(point, d3Rect.left + 10, d3Rect.left + 80, d3Rect.top + 980, d3Rect.top + 1044))
+						{
+							return false;
+						}
+
+						//Skill, Inventory,...
+						if (PointInRect(point, d3Rect.left + 1089, d3Rect.left + 1284, d3Rect.top + 995, d3Rect.top + 1062))
+						{
+							return false;
+						}
+
+						//Friend Button
+						if (PointInRect(point, d3Rect.left + 1764, d3Rect.left + 1904, d3Rect.top + 979, d3Rect.top + 1044))
+						{
+							return false;
+						}
+
+						//Small chat box
+						if (PointInRect(point, d3Rect.left + 32, d3Rect.left + 346, d3Rect.top + 738, d3Rect.top + 877))
+						{
+							return false;
+						}
+
+						//Objectives Object
+						if (PointInRect(point, d3Rect.left + 1862, d3Rect.left + 1893, d3Rect.top + 367, d3Rect.top + 391))
+						{
+							return false;
+						}
+
+						//Main-Player
+						if (PointInRect(point, d3Rect.left + 28, d3Rect.left + 93, d3Rect.top + 47, d3Rect.top + 149))
+						{
+							return false;
+						}
+					}
+
+
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
 
 void		ValidateConfig(void)
 {
-	TRACE("leftMouseTime %d\r\n", myConfig.leftMouseTime);
 	myConfig.leftMouseTime = int(round(myConfig.leftMouseTime / 50.0) * 50);
 	myConfig.rightMouseTime = int(round(myConfig.rightMouseTime / 50.0) * 50);
 	myConfig.skillSlot01Time = int(round(myConfig.skillSlot01Time / 50.0) * 50);
@@ -62,9 +220,8 @@ void		ValidateConfig(void)
 	if (myConfig.skill04Enable != 0) myConfig.skill04Enable = 1;
 }
 
+
 // CDiabloIIIMarcoDlg dialog
-
-
 CDiabloIIIMarcoDlg::CDiabloIIIMarcoDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIABLOIIIMARCO_DIALOG, pParent)
 {
@@ -95,7 +252,52 @@ BEGIN_MESSAGE_MAP(CDiabloIIIMarcoDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHECK_SKILL4, &CDiabloIIIMarcoDlg::OnBnClickedCheckSkill4)
 END_MESSAGE_MAP()
 
-
+extern "C" __declspec(dllexport) LRESULT CALLBACK HookProc(int nCode, WPARAM wParam, LPARAM lParam)
+{
+	bool		flagNeedMoreHook = true;
+	if (nCode >= 0 && nCode == HC_ACTION)
+	{
+		LPKBDLLHOOKSTRUCT keyParam = (LPKBDLLHOOKSTRUCT)(void*)lParam;
+		if (wParam == WM_KEYUP)
+		{
+			switch (keyParam->vkCode)
+			{
+			case VK_F1:
+				if (IsD3WindowActive()) {
+					flagNeedMoreHook = false;
+				}
+				break;
+			}
+		}
+		else if (wParam == WM_KEYDOWN)
+		{
+			switch (keyParam->vkCode)
+			{
+			case VK_F1:
+				flagNeedMoreHook = false;
+				flagOnF1 = !flagOnF1;
+				leftMouseCooldown = 99999;
+				break;
+			case VK_F2:
+				flagOnF2 = !flagOnF2;
+				skillSlot01Cooldown = 99999;
+				skillSlot02Cooldown = 99999;
+				skillSlot03Cooldown = 99999;
+				skillSlot04Cooldown = 99999;
+				break;
+			case VK_F3:
+				flagOnF3 = !flagOnF3;
+				rightMouseCooldown = 99999;
+				break;
+			}
+		}
+	}
+	if (flagNeedMoreHook == false)
+	{
+		return 1;
+	}
+	return CallNextHookEx(hGlobalHook, nCode, wParam, lParam);
+}
 // CDiabloIIIMarcoDlg message handlers
 
 BOOL CDiabloIIIMarcoDlg::OnInitDialog()
@@ -124,7 +326,6 @@ BOOL CDiabloIIIMarcoDlg::OnInitDialog()
 	srand((unsigned int)time((time_t*)0));
 
 	CDialogEx::OnInitDialog();
-	((CListBox*)GetDlgItem(IDC_LIST_LOG))->InsertString(0, L"Init Program");
 
 
 	// Set the icon for this dialog.  The framework does this automatically
@@ -176,6 +377,7 @@ BOOL CDiabloIIIMarcoDlg::OnInitDialog()
 	swprintf_s(buffer, L"%d", myConfig.skillSlot04Time);
 	GetDlgItem(IDD_EDIT_SKILL4)->SetWindowText(buffer);
 
+	hGlobalHook = SetWindowsHookEx(WH_KEYBOARD_LL, HookProc, GetModuleHandle(NULL), 0);
 	// TODO: Add extra initialization here
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -223,17 +425,77 @@ HCURSOR CDiabloIIIMarcoDlg::OnQueryDragIcon()
 }
 
 
-
 void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 {
-	//TRACE("Test\r\n");
-	// TODO: Add your implementation code here.
+	if (myTimerID == nIdEvent)
+	{
+		HWND d3Wnd = GetD3Windows();
+		RECT d3Rect = { 0 };
+		if (d3Wnd == 0)
+		{
+			flagOnF1 = false;
+			flagOnF2 = false;
+			flagOnF3 = false;
+		}
+		else {
+			::GetWindowRect(d3Wnd, &d3Rect);
+
+
+		}
+		POINT point = { 0 };
+		GetCursorPos(&point);
+
+		GetDlgItem(IDD_EDIT_LEFTMOUSE_MS)->EnableWindow(!flagOnF1);
+		GetDlgItem(IDC_STATIC_LEFTMOUSE)->ShowWindow(flagOnF1);
+
+		GetDlgItem(IDC_STATIC_AUTOBUTTON)->ShowWindow(flagOnF2);
+		GetDlgItem(IDC_CHECK_SKILL1)->EnableWindow(!flagOnF2);
+		GetDlgItem(IDC_CHECK_SKILL2)->EnableWindow(!flagOnF2);
+		GetDlgItem(IDC_CHECK_SKILL3)->EnableWindow(!flagOnF2);
+		GetDlgItem(IDC_CHECK_SKILL4)->EnableWindow(!flagOnF2);
+		GetDlgItem(IDD_EDIT_SKILL1)->EnableWindow(!flagOnF2&&myConfig.skill01Enable);
+		GetDlgItem(IDD_EDIT_SKILL2)->EnableWindow(!flagOnF2&&myConfig.skill02Enable);
+		GetDlgItem(IDD_EDIT_SKILL3)->EnableWindow(!flagOnF2&&myConfig.skill03Enable);
+		GetDlgItem(IDD_EDIT_SKILL4)->EnableWindow(!flagOnF2&&myConfig.skill04Enable);
+
+		GetDlgItem(IDD_EDIT_RIGHTMOUSE_MS)->EnableWindow(!flagOnF3);
+		GetDlgItem(IDC_STATIC_RIGHTMOUSE)->ShowWindow(flagOnF3);
+
+		if (flagOnF1) {
+			leftMouseCooldown += timerDelay;
+			if (leftMouseCooldown >= myConfig.leftMouseTime)
+			{
+				if (ValidToSendD3Click()) SendD3LeftMouseClick();
+				leftMouseCooldown = 0;
+			}
+		}
+
+		if (flagOnF3) {
+			rightMouseCooldown += timerDelay;
+			if (rightMouseCooldown >= myConfig.rightMouseTime)
+			{
+				if (ValidToSendD3Click()) SendD3RightMouseClick();
+				rightMouseCooldown = 0;
+			}
+		}
+		if (flagOnF2)
+		{
+			if (myConfig.skill01Enable) {
+				skillSlot01Cooldown += timerDelay;
+				if (skillSlot01Cooldown >= myConfig.skillSlot01Time)
+				{
+					SendD3Key(keySKill01);
+					skillSlot01Cooldown = 0;
+				}
+			}
+		}
+	}
 }
+
 
 
 void CDiabloIIIMarcoDlg::SaveConfig()
 {
-	((CListBox*)GetDlgItem(IDC_LIST_LOG))->InsertString(0, L"Save Config");
 	CFile saveFile;
 	if (saveFile.Open(configSavePath, CFile::modeCreate | CFile::modeWrite))
 	{
@@ -244,7 +506,6 @@ void CDiabloIIIMarcoDlg::SaveConfig()
 
 void CDiabloIIIMarcoDlg::LoadConfig()
 {
-	((CListBox*)GetDlgItem(IDC_LIST_LOG))->InsertString(0, L"Load Config");
 	CFile saveFile;
 	if (saveFile.Open(configSavePath, CFile::modeRead))
 	{
@@ -267,7 +528,6 @@ void CDiabloIIIMarcoDlg::OnKillFocusEditLeftMouseMs()
 	if (newValue != myConfig.leftMouseTime)
 	{
 		myConfig.leftMouseTime = newValue;
-		TRACE("Left Mouse ms %d\r\n", myConfig.leftMouseTime);
 		SaveConfig();
 	}
 
@@ -285,7 +545,6 @@ void CDiabloIIIMarcoDlg::OnKillFocusEditRightMouseMs()
 	if (newValue != myConfig.rightMouseTime)
 	{
 		myConfig.rightMouseTime = newValue;
-		TRACE("Right Mouse ms %d\r\n", myConfig.rightMouseTime);
 		SaveConfig();
 	}
 }
@@ -303,7 +562,6 @@ void CDiabloIIIMarcoDlg::OnKillFocusEditSkill1Ms()
 	if (newValue != myConfig.skillSlot01Time)
 	{
 		myConfig.skillSlot01Time = newValue;
-		TRACE("Right Mouse ms %d\r\n", myConfig.skillSlot01Time);
 		SaveConfig();
 	}
 }
@@ -322,7 +580,6 @@ void CDiabloIIIMarcoDlg::OnKillFocusEditSkill2Ms()
 	if (newValue != myConfig.skillSlot02Time)
 	{
 		myConfig.skillSlot02Time = newValue;
-		TRACE("Right Mouse ms %d\r\n", myConfig.skillSlot02Time);
 		SaveConfig();
 	}
 }
@@ -339,7 +596,6 @@ void CDiabloIIIMarcoDlg::OnKillFocusEditSkill3Ms()
 	if (newValue != myConfig.skillSlot03Time)
 	{
 		myConfig.skillSlot03Time = newValue;
-		TRACE("Right Mouse ms %d\r\n", myConfig.skillSlot03Time);
 		SaveConfig();
 	}
 }
@@ -357,7 +613,6 @@ void CDiabloIIIMarcoDlg::OnKillFocusEditSkill4Ms()
 	if (newValue != myConfig.skillSlot04Time)
 	{
 		myConfig.skillSlot04Time = newValue;
-		TRACE("Right Mouse ms %d\r\n", myConfig.skillSlot04Time);
 		SaveConfig();
 	}
 }
@@ -367,6 +622,7 @@ void CDiabloIIIMarcoDlg::OnBnClickedCheckSkill1()
 	myConfig.skill01Enable = !myConfig.skill01Enable;
 	((CButton*)GetDlgItem(IDC_CHECK_SKILL1))->SetCheck(myConfig.skill01Enable);
 	GetDlgItem(IDD_EDIT_SKILL1)->EnableWindow(myConfig.skill01Enable);
+	GetDlgItem(IDD_EDIT_SKILL1)->SetFocus();
 	SaveConfig();
 }
 void CDiabloIIIMarcoDlg::OnBnClickedCheckSkill2()
@@ -374,6 +630,7 @@ void CDiabloIIIMarcoDlg::OnBnClickedCheckSkill2()
 	myConfig.skill02Enable = !myConfig.skill02Enable;
 	((CButton*)GetDlgItem(IDC_CHECK_SKILL2))->SetCheck(myConfig.skill02Enable);
 	GetDlgItem(IDD_EDIT_SKILL2)->EnableWindow(myConfig.skill02Enable);
+	GetDlgItem(IDD_EDIT_SKILL2)->SetFocus();
 	SaveConfig();
 }
 
@@ -382,6 +639,7 @@ void CDiabloIIIMarcoDlg::OnBnClickedCheckSkill3()
 	myConfig.skill03Enable = !myConfig.skill03Enable;
 	((CButton*)GetDlgItem(IDC_CHECK_SKILL3))->SetCheck(myConfig.skill03Enable);
 	GetDlgItem(IDD_EDIT_SKILL3)->EnableWindow(myConfig.skill03Enable);
+	GetDlgItem(IDD_EDIT_SKILL3)->SetFocus();
 	SaveConfig();
 }
 void CDiabloIIIMarcoDlg::OnBnClickedCheckSkill4()
@@ -389,5 +647,6 @@ void CDiabloIIIMarcoDlg::OnBnClickedCheckSkill4()
 	myConfig.skill04Enable = !myConfig.skill04Enable;
 	((CButton*)GetDlgItem(IDC_CHECK_SKILL4))->SetCheck(myConfig.skill04Enable);
 	GetDlgItem(IDD_EDIT_SKILL4)->EnableWindow(myConfig.skill04Enable);
+	GetDlgItem(IDD_EDIT_SKILL4)->SetFocus();
 	SaveConfig();
 }

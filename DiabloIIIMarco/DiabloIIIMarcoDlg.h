@@ -30,15 +30,14 @@ protected:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+	INT_PTR myTimerID;
+	afx_msg void OnTimer(UINT_PTR nIdEvent);
 	DECLARE_MESSAGE_MAP()
 
-	INT_PTR myTimerID;
 public:
-	afx_msg void OnTimer(UINT_PTR nIdEvent);
+
 	afx_msg void SaveConfig();
-
 	afx_msg void LoadConfig();
-
 	afx_msg void OnKillFocusEditLeftMouseMs();
 	afx_msg void OnKillFocusEditRightMouseMs();
 	void OnKillFocusEditSkill1Ms();
@@ -50,3 +49,4 @@ public:
 	void OnBnClickedCheckSkill3();
 	void OnBnClickedCheckSkill4();
 };
+
