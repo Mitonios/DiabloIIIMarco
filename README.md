@@ -1,4 +1,4 @@
-# DiabloIIIMarco
+# Diablo III Auto Marco
 Tool bảo vệ chuột và bàn phím cho Diablo III
 
 Phát triển từ code gốc của: https://github.com/langmaninternet/DialoIIISupport
