@@ -6,11 +6,13 @@
 #include "DiabloIIIMarco.h"
 #include "DiabloIIIMarcoDlg.h"
 #include "afxdialogex.h"
+#include "Trace.h"
 #include <Windows.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
+//#ifdef _debug
+//#define new debug_new
+//#endif
+
 struct MyConfig
 {
 	int		leftMouseTime;
@@ -23,8 +25,6 @@ struct MyConfig
 	int		skill02Enable;
 	int		skill03Enable;
 	int		skill04Enable;
-
-
 };
 
 /************************************************************************/
@@ -36,6 +36,8 @@ const int				timerDelay = 50/*ms*/;
 bool					flagOnF1 = false;
 bool					flagOnF2 = false;
 bool					flagOnF3 = false;
+bool					flagOnF4 = false;
+bool					flagOnF5 = false;
 int						leftMouseCooldown;
 int						rightMouseCooldown;
 int						skillSlot01Cooldown;
@@ -72,7 +74,6 @@ void		SendD3Key(int keyCode)
 	HWND d3Wnd = GetD3Windows();
 	if (d3Wnd)
 	{
-		TRACE("Send Key \r\n");
 		SendMessage(d3Wnd, WM_KEYDOWN, keyCode, 0);
 		Sleep(5 + (rand() % 3));
 		SendMessage(d3Wnd, WM_KEYUP, keyCode, 0);
@@ -89,6 +90,13 @@ void		SetD3Mouse(int x, int y)
 		SetCursorPos(d3Rect.left + x, d3Rect.top + y);
 	}
 }
+COLORREF getColor(int x, int y) {
+	HDC dc = GetDC(NULL);
+	COLORREF color = GetPixel(dc, x, y);
+	ReleaseDC(NULL, dc);
+	return color;
+}
+
 void		SendD3LeftMouseClick()
 {
 	HWND d3Wnd = GetD3Windows();
@@ -199,6 +207,38 @@ bool		ValidToSendD3Click(void)
 	return false;
 }
 
+bool CheckNullInventorySlot(COLORREF color) {
+	int r = GetRValue(color);
+	int g = GetGValue(color);
+	int b = GetBValue(color);
+	if (r >= 12 && r <= 17) {
+		if (g >= 12 && g <= 17) {
+			if (b >= 6 && b <= 13) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void ClickOkButton(double d3Scale) {
+	int x = (int)(754.0*d3Scale);
+	int y = (int)(373.0*d3Scale);
+	COLORREF color = getColor(x, y);
+	int r = GetRValue(color);
+	int g = GetGValue(color);
+	int b = GetBValue(color);
+	TRACE(_T("Button Color R:%d,G:%d,B:%d \r\n"), r, g, b);
+	if (r >= 35 && r <= 48) {
+		if (g >= 5 && g <= 10) {
+			if (b >= 0 && b <= 5) {
+				SetD3Mouse(x, y);
+				SendD3LeftMouseClick();
+				Sleep(50 + (rand() % 5));
+			}
+		}
+	}
+}
 
 void		ValidateConfig(void)
 {
@@ -225,7 +265,7 @@ void		ValidateConfig(void)
 CDiabloIIIMarcoDlg::CDiabloIIIMarcoDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIABLOIIIMARCO_DIALOG, pParent)
 {
-	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_hIcon = AfxGetApp()->LoadIcon(IDI_ICON1);
 }
 
 void CDiabloIIIMarcoDlg::DoDataExchange(CDataExchange* pDX)
@@ -288,6 +328,14 @@ extern "C" __declspec(dllexport) LRESULT CALLBACK HookProc(int nCode, WPARAM wPa
 			case VK_F3:
 				flagOnF3 = !flagOnF3;
 				rightMouseCooldown = 99999;
+				break;
+			case VK_F4:
+				TRACE(_T("Salvage\r\n"));
+				flagOnF4 = !flagOnF4;
+				break;
+			case VK_F5:
+				TRACE(_T("Check Mouse xy\r\n"));
+				flagOnF5 = !flagOnF5;
 				break;
 			}
 		}
@@ -439,11 +487,8 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 		}
 		else {
 			::GetWindowRect(d3Wnd, &d3Rect);
-
-
 		}
 		POINT point = { 0 };
-		GetCursorPos(&point);
 
 		GetDlgItem(IDD_EDIT_LEFTMOUSE_MS)->EnableWindow(!flagOnF1);
 		GetDlgItem(IDC_STATIC_LEFTMOUSE)->ShowWindow(flagOnF1);
@@ -478,8 +523,7 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 				rightMouseCooldown = 0;
 			}
 		}
-		if (flagOnF2)
-		{
+		if (flagOnF2) {
 			if (myConfig.skill01Enable) {
 				skillSlot01Cooldown += timerDelay;
 				if (skillSlot01Cooldown >= myConfig.skillSlot01Time)
@@ -488,6 +532,152 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 					skillSlot01Cooldown = 0;
 				}
 			}
+			if (myConfig.skill02Enable) {
+				skillSlot02Cooldown += timerDelay;
+				if (skillSlot02Cooldown >= myConfig.skillSlot02Time)
+				{
+					SendD3Key(keySKill02);
+					skillSlot02Cooldown = 0;
+				}
+			}
+			if (myConfig.skill03Enable) {
+				skillSlot03Cooldown += timerDelay;
+				if (skillSlot03Cooldown >= myConfig.skillSlot03Time)
+				{
+					SendD3Key(keySKill03);
+					skillSlot03Cooldown = 0;
+				}
+			}
+			if (myConfig.skill04Enable) {
+				skillSlot04Cooldown += timerDelay;
+				if (skillSlot04Cooldown >= myConfig.skillSlot04Time)
+				{
+					SendD3Key(keySKill04);
+					skillSlot04Cooldown = 0;
+				}
+			}
+		}
+		int		d3Width = d3Rect.right - d3Rect.left;
+		int		d3Height = d3Rect.bottom - d3Rect.top;
+		double		d3Scale = d3Height / 1080.0;
+		int xCenter = int(d3Width / 2);
+		int yCenter = int(d3Height / 2);
+		//Khởi tạo tọa độ hòm đồ
+		int			xIventoryArray[60] = { 0 };
+		int			yIventoryArray[60] = { 0 };
+		double		xCubeLeftPage = 583 * d3Scale;
+		double		yCubeLeftPage = 840 * d3Scale;
+		double		xCubeRightPage = 852 * d3Scale;
+		double		yCubeRightPage = 840 * d3Scale;
+		if (xIventoryArray[0] == 0 && yIventoryArray[0] == 0)
+		{
+			double		xInventory = (d3Width - (1920.0 - 1423.0) * d3Scale);
+			double		yInventory = 583 * d3Scale;
+			double		wIventory = 500.0 * d3Scale;
+			double		hIventory = 296.0 * d3Scale;
+			double		wSlot = wIventory / 10.0;
+			double		hSlot = hIventory / 6.0;
+			for (int icolumn = 0; icolumn < 10; icolumn++)
+			{
+				int currentX = (int)round(xInventory + wSlot * icolumn);
+				for (int irow = 0; irow < 6; irow++)
+				{
+					xIventoryArray[irow * 10 + icolumn] = currentX;
+					yIventoryArray[irow * 10 + icolumn] = (int)round(yInventory + hSlot * irow);
+				}
+			}
+		}
+		//END-Khởi tạo tọa độ hòm đồ
+		if (flagOnF4) {
+			int xTabSalvage = (int)round(518.0 * d3Scale);
+			int yTabSalvage = (int)round(486.0 * d3Scale);
+
+
+			//Stash
+			//TRACE(_T("d3Width: %d, d3Height: %d, d3Scale: %d \n"), d3Width, d3Height, d3Scale);
+
+			//Chuyển qua Tab Salvage
+			SetD3Mouse(xTabSalvage, yTabSalvage);
+			SendD3LeftMouseClick();
+
+			GetCursorPos(&point);
+			COLORREF cl = getColor(point.x, point.y);
+			//TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), point.x, point.y,  GetRValue(cl), GetGValue(cl), GetBValue(cl));
+
+			if (GetRValue(cl) == 252 && GetGValue(cl) == 195 && GetBValue(cl) == 21) {
+				//Đúng màu thì làm tiếp
+				int			xIventoryProcess[60] = { 0 };
+				int			yIventoryProcess[60] = { 0 };
+				bool		process = false;
+				int xSalvage = (int)round(170.0 * d3Scale);
+				int ySalvage = (int)round(290.0 * d3Scale);
+				//Sal các loại vàng xanh xám
+				int xSalvageGold = (int)round(381.0 * d3Scale);
+				if (flagOnF4) SetD3Mouse(xSalvageGold, ySalvage);
+				if (flagOnF4) SendD3LeftMouseClick();
+				if (flagOnF4) Sleep(50 + (rand() % 5));
+				if (flagOnF4) ClickOkButton(d3Scale);
+
+				int xSalvageBlue = (int)round(318.0 * d3Scale);
+				if (flagOnF4) SetD3Mouse(xSalvageBlue, ySalvage);
+				if (flagOnF4) SendD3LeftMouseClick();
+				if (flagOnF4) Sleep(50 + (rand() % 5));
+				if (flagOnF4) ClickOkButton(d3Scale);
+
+				int xSalvageGray = (int)round(294.0 * d3Scale);
+				if (flagOnF4) SetD3Mouse(xSalvageGray, ySalvage);
+				if (flagOnF4) SendD3LeftMouseClick();
+				if (flagOnF4) Sleep(50 + (rand() % 5));
+				if (flagOnF4) ClickOkButton(d3Scale);
+				//Kiểm tra những ô có item
+				for (int iitem = 0; iitem < 60; iitem++)
+				{
+					//Kiểm tra những ô có item
+					cl = getColor(xIventoryArray[iitem], yIventoryArray[iitem]);
+					//SetD3Mouse(xIventoryArray[iitem], yIventoryArray[iitem]);
+					if (!CheckNullInventorySlot(cl)) {
+						xIventoryProcess[iitem] = xIventoryArray[iitem];
+						yIventoryProcess[iitem] = yIventoryArray[iitem];
+						process = true;
+						//TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), xIventoryArray[iitem], yIventoryArray[iitem], GetRValue(cl), GetGValue(cl), GetBValue(cl));
+					}
+				}
+				//Xử lý những ô có item
+				if (process == true) {
+					//Sal các loại Legend
+					if (flagOnF4) SetD3Mouse(xSalvage, ySalvage);
+					if (flagOnF4) SendD3LeftMouseClick();
+					if (flagOnF4) Sleep(50 + (rand() % 5));
+					for (int iitem = 0; iitem < 60; iitem++)
+					{
+						if (xIventoryProcess[iitem] != 0 && xIventoryProcess[iitem] != 0) {
+							if (flagOnF4) SetD3Mouse(xIventoryArray[iitem], yIventoryArray[iitem]);
+							if (flagOnF4) SendD3LeftMouseClick();
+							if (flagOnF4) Sleep(50 + (rand() % 5));
+							if (flagOnF4) ClickOkButton(d3Scale);
+						}
+					}
+				}
+				//Xử lý xong sửa đồ
+				int xRepairTable = 517 * d3Scale;
+				int yRepairTable = 620 * d3Scale;
+
+				int xRepairButton = 264 * d3Scale;
+				int yRepairButton = 594 * d3Scale;
+				if (flagOnF4) SetD3Mouse(xRepairTable, yRepairTable);
+				if (flagOnF4) SendD3LeftMouseClick();
+				if (flagOnF4) SetD3Mouse(xRepairButton, yRepairButton);
+				if (flagOnF4) SendD3LeftMouseClick();
+			}
+			flagOnF4 = false;
+		}
+		if (flagOnF5) {
+			int x = (int)(754.0*d3Scale);
+			int y = (int)(373.0*d3Scale);
+			GetCursorPos(&point);
+			COLORREF cl = getColor(x, y);
+			TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), point.x, point.y, GetRValue(cl), GetGValue(cl), GetBValue(cl));
+			flagOnF5 = false;
 		}
 	}
 }

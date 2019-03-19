@@ -8,6 +8,7 @@ Các tính năng chính
 - F1: Tự động bấm chuột trái
 - F3: Tự động bấm chuột phải
 - F2: Tự động bấm Hotkey từ 1=>4
+- F4: Tự động Salvage đồ thừa (Cả Legendary Items)
 
 Phát triển
 ------------
