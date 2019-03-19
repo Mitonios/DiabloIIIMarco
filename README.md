@@ -3,15 +3,15 @@ Tool bảo vệ chuột và bàn phím cho Diablo III
 
 Phát triển từ code gốc của: https://github.com/langmaninternet/DialoIIISupport
 
-#Download
+Download
 ------------
 https://github.com/Mitonios/DiabloIIIMarco/archive/master.zip
 
-#Screenshot
+Screenshot
 ------------
 ![](FinalRelease/Screenshot.png)
 
-#Các tính năng chính
+Các tính năng chính
 ------------
 - F1: Tự động bấm chuột trái
 - F3: Tự động bấm chuột phải
@@ -19,6 +19,6 @@ https://github.com/Mitonios/DiabloIIIMarco/archive/master.zip
 - F4: Tự động Salvage đồ thừa (Cả Legendary Items)
 
 
-#Dev
+Dev
 ------------
 [Mitonios](http://mitonios.com/)
