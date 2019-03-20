@@ -232,8 +232,11 @@ void ClickOkButton(double d3Scale) {
 	if (r >= 35 && r <= 48) {
 		if (g >= 5 && g <= 10) {
 			if (b >= 0 && b <= 5) {
-				SetD3Mouse(x, y);
-				SendD3LeftMouseClick();
+				//SetD3Mouse(x, y);
+				//SendD3LeftMouseClick();
+				SendD3Key(VK_RETURN);
+				Sleep(50 + (rand() % 5));
+				SendD3Key(VK_RETURN);
 				Sleep(50 + (rand() % 5));
 			}
 		}
