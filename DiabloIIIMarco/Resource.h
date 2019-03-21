@@ -15,6 +15,8 @@
 #define IDC_CHECK_SKILL1                1006
 #define IDD_EDIT_SKILL2                 1007
 #define IDC_CHECK_SKILL2                1008
+#define IDC_STATIC_AUTOBUTTON2          1009
+#define IDC_STATIC_AUTOHEAL             1009
 #define IDD_EDIT_SKILL3                 1011
 #define IDC_CHECK_SKILL3                1012
 #define IDD_EDIT_SKILL4                 1013

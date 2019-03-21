@@ -243,6 +243,21 @@ void ClickOkButton(double d3Scale) {
 	}
 }
 
+bool CheckBlood(double d3Scale) {
+	int xHeartPos = 447 * d3Scale;
+	int yHeartPos = 987 * d3Scale;
+	COLORREF cl = getColor(xHeartPos, yHeartPos);
+	if (GetRValue(cl) >= 110 && GetRValue(cl) <= 190) {
+		if (GetGValue(cl) >= 6 && GetGValue(cl) <= 12) {
+			if (GetBValue(cl) >= 2 && GetBValue(cl) <= 6) {
+				//Phat hien mau
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void		ValidateConfig(void)
 {
 	myConfig.leftMouseTime = int(round(myConfig.leftMouseTime / 50.0) * 50);
@@ -337,7 +352,6 @@ extern "C" __declspec(dllexport) LRESULT CALLBACK HookProc(int nCode, WPARAM wPa
 				flagOnF4 = !flagOnF4;
 				break;
 			case VK_F5:
-				TRACE(_T("Check Mouse xy\r\n"));
 				flagOnF5 = !flagOnF5;
 				break;
 			}
@@ -509,6 +523,8 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 		GetDlgItem(IDD_EDIT_RIGHTMOUSE_MS)->EnableWindow(!flagOnF3);
 		GetDlgItem(IDC_STATIC_RIGHTMOUSE)->ShowWindow(flagOnF3);
 
+		GetDlgItem(IDC_STATIC_AUTOHEAL)->ShowWindow(flagOnF5);
+
 		if (flagOnF1) {
 			leftMouseCooldown += timerDelay;
 			if (leftMouseCooldown >= myConfig.leftMouseTime)
@@ -675,10 +691,16 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 			flagOnF4 = false;
 		}
 		if (flagOnF5) {
-			GetCursorPos(&point);
-			COLORREF cl = getColor(point.x, point.y);
-			TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), point.x, point.y, GetRValue(cl), GetGValue(cl), GetBValue(cl));
-			flagOnF5 = false;
+			//SendD3Key(0x51);
+			if (!CheckBlood(d3Scale)) {
+				SendD3Key(0x51);
+				TRACE(_T("Hoi mau \r\n"));
+			}
+			
+			//GetCursorPos(&point);
+			//COLORREF cl = getColor(point.x, point.y);
+			//TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), point.x, point.y, GetRValue(cl), GetGValue(cl), GetBValue(cl));
+			//flagOnF5 = false;
 		}
 	}
 }
