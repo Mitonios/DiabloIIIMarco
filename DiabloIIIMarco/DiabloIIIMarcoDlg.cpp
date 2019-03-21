@@ -268,7 +268,7 @@ void		ValidateConfig(void)
 CDiabloIIIMarcoDlg::CDiabloIIIMarcoDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIABLOIIIMARCO_DIALOG, pParent)
 {
-	m_hIcon = AfxGetApp()->LoadIcon(IDI_ICON1);
+	m_hIcon = AfxGetApp()->LoadIcon(IDI_ICON3);
 }
 
 void CDiabloIIIMarcoDlg::DoDataExchange(CDataExchange* pDX)
