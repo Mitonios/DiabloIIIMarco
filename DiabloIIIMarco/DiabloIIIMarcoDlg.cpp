@@ -233,12 +233,30 @@ void ClickOkButton(double d3Scale) {
 	if (r >= 35 && r <= 48) {
 		if (g >= 5 && g <= 10) {
 			if (b >= 0 && b <= 5) {
-				SetD3Mouse(x, y);
-				SendD3LeftMouseClick();
+				//SetD3Mouse(x, y);
+				//SendD3LeftMouseClick();
+				SendD3Key(VK_RETURN);
+				Sleep(50 + (rand() % 5));
+				SendD3Key(VK_RETURN);
 				Sleep(50 + (rand() % 5));
 			}
 		}
 	}
+}
+
+bool CheckBlood(double d3Scale) {
+	int xHeartPos = 447 * d3Scale;
+	int yHeartPos = 987 * d3Scale;
+	COLORREF cl = getColor(xHeartPos, yHeartPos);
+	if (GetRValue(cl) >= 110 && GetRValue(cl) <= 190) {
+		if (GetGValue(cl) >= 6 && GetGValue(cl) <= 12) {
+			if (GetBValue(cl) >= 2 && GetBValue(cl) <= 6) {
+				//Phat hien mau
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 void		ValidateConfig(void)
@@ -266,7 +284,7 @@ void		ValidateConfig(void)
 CDiabloIIIMarcoDlg::CDiabloIIIMarcoDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIABLOIIIMARCO_DIALOG, pParent)
 {
-	m_hIcon = AfxGetApp()->LoadIcon(IDI_ICON1);
+	m_hIcon = AfxGetApp()->LoadIcon(IDI_ICON3);
 }
 
 void CDiabloIIIMarcoDlg::DoDataExchange(CDataExchange* pDX)
@@ -335,7 +353,6 @@ extern "C" __declspec(dllexport) LRESULT CALLBACK HookProc(int nCode, WPARAM wPa
 				flagOnF4 = !flagOnF4;
 				break;
 			case VK_F5:
-				TRACE(_T("Check Mouse xy\r\n"));
 				flagOnF5 = !flagOnF5;
 				break;
 			}
@@ -507,6 +524,8 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 		GetDlgItem(IDD_EDIT_RIGHTMOUSE_MS)->EnableWindow(!flagOnF3);
 		GetDlgItem(IDC_STATIC_RIGHTMOUSE)->ShowWindow(flagOnF3);
 
+		GetDlgItem(IDC_STATIC_AUTOHEAL)->ShowWindow(flagOnF5);
+
 		if (flagOnF1) {
 			leftMouseCooldown += timerDelay;
 			if (leftMouseCooldown >= myConfig.leftMouseTime)
@@ -625,7 +644,7 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 				if (flagOnF4) Sleep(50 + (rand() % 5));
 				if (flagOnF4) ClickOkButton(d3Scale);
 
-				int xSalvageGray = (int)round(294.0 * d3Scale);
+				int xSalvageGray = (int)round(245 * d3Scale);
 				if (flagOnF4) SetD3Mouse(xSalvageGray, ySalvage);
 				if (flagOnF4) SendD3LeftMouseClick();
 				if (flagOnF4) Sleep(50 + (rand() % 5));
@@ -673,12 +692,16 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 			flagOnF4 = false;
 		}
 		if (flagOnF5) {
-			int x = (int)(754.0*d3Scale);
-			int y = (int)(373.0*d3Scale);
-			GetCursorPos(&point);
-			COLORREF cl = getColor(x, y);
-			TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), point.x, point.y, GetRValue(cl), GetGValue(cl), GetBValue(cl));
-			flagOnF5 = false;
+			//SendD3Key(0x51);
+			if (!CheckBlood(d3Scale)) {
+				SendD3Key(0x51);
+				TRACE(_T("Hoi mau \r\n"));
+			}
+			
+			//GetCursorPos(&point);
+			//COLORREF cl = getColor(point.x, point.y);
+			//TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), point.x, point.y, GetRValue(cl), GetGValue(cl), GetBValue(cl));
+			//flagOnF5 = false;
 		}
 	}
 }

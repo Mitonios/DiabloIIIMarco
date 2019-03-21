@@ -204,8 +204,8 @@
     <None Include="res\DiabloIIIMarco.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="icon1.ico" />
-    <Image Include="res\icon.ico" />
+    <Image Include="..\..\icon_Ozt_icon.ico" />
+    <Image Include="res\icon_Ozt_icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

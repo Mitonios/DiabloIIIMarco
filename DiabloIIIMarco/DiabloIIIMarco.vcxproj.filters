@@ -59,10 +59,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="icon1.ico">
+    <Image Include="..\..\icon_Ozt_icon.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon.ico">
+    <Image Include="res\icon_Ozt_icon.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

@@ -5,7 +5,7 @@
 #define IDM_ABOUTBOX                    0x0010
 #define IDS_ABOUTBOX                    101
 #define IDD_DIABLOIIIMARCO_DIALOG       102
-#define IDI_ICON1                       132
+#define IDI_ICON3                       134
 #define IDC_STATIC_RIGHTMOUSE           1000
 #define IDD_EDIT_LEFTMOUSE_MS           1001
 #define IDD_EDIT_RIGHTMOUSE_MS          1002
@@ -15,6 +15,8 @@
 #define IDC_CHECK_SKILL1                1006
 #define IDD_EDIT_SKILL2                 1007
 #define IDC_CHECK_SKILL2                1008
+#define IDC_STATIC_AUTOBUTTON2          1009
+#define IDC_STATIC_AUTOHEAL             1009
 #define IDD_EDIT_SKILL3                 1011
 #define IDC_CHECK_SKILL3                1012
 #define IDD_EDIT_SKILL4                 1013
@@ -25,7 +27,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        133
+#define _APS_NEXT_RESOURCE_VALUE        135
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1017
 #define _APS_NEXT_SYMED_VALUE           101
