@@ -8,7 +8,7 @@
 #include "afxdialogex.h"
 #include "Trace.h"
 #include <Windows.h>
-
+#include <iostream>
 //#ifdef _debug
 //#define new debug_new
 //#endif
@@ -49,6 +49,7 @@ wchar_t					keySKill02 = 0x32;
 wchar_t					keySKill03 = 0x33;
 wchar_t					keySKill04 = 0x34;
 HHOOK					hGlobalHook;
+
 
 bool		IsD3WindowActive(void)
 {
@@ -375,7 +376,7 @@ BOOL CDiabloIIIMarcoDlg::OnInitDialog()
 
 	CDialogEx::OnInitDialog();
 
-
+	
 	// Set the icon for this dialog.  The framework does this automatically
 	//  when the application's main window is not a dialog
 	SetIcon(m_hIcon, TRUE);			// Set big icon
@@ -602,9 +603,9 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 
 			GetCursorPos(&point);
 			COLORREF cl = getColor(point.x, point.y);
-			//TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), point.x, point.y,  GetRValue(cl), GetGValue(cl), GetBValue(cl));
-
-			if (GetRValue(cl) == 252 && GetGValue(cl) == 195 && GetBValue(cl) == 21) {
+			TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), point.x, point.y,  GetRValue(cl), GetGValue(cl), GetBValue(cl));
+			if(GetRValue(cl)>=250&& GetRValue(cl) <= 255&& GetGValue(cl)>=190&& GetGValue(cl) <= 198&& GetBValue(cl)>=20&& GetBValue(cl)<=25){
+			//if (GetRValue(cl) == 252 && GetGValue(cl) == 195 && GetBValue(cl) == 21) {
 				//Đúng màu thì làm tiếp
 				int			xIventoryProcess[60] = { 0 };
 				int			yIventoryProcess[60] = { 0 };
@@ -653,7 +654,7 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 						if (xIventoryProcess[iitem] != 0 && xIventoryProcess[iitem] != 0) {
 							if (flagOnF4) SetD3Mouse(xIventoryArray[iitem], yIventoryArray[iitem]);
 							if (flagOnF4) SendD3LeftMouseClick();
-							if (flagOnF4) Sleep(50 + (rand() % 5));
+							if (flagOnF4) Sleep(100 + (rand() % 5));
 							if (flagOnF4) ClickOkButton(d3Scale);
 						}
 					}
