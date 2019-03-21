@@ -627,7 +627,7 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 				if (flagOnF4) Sleep(50 + (rand() % 5));
 				if (flagOnF4) ClickOkButton(d3Scale);
 
-				int xSalvageGray = (int)round(294.0 * d3Scale);
+				int xSalvageGray = (int)round(245 * d3Scale);
 				if (flagOnF4) SetD3Mouse(xSalvageGray, ySalvage);
 				if (flagOnF4) SendD3LeftMouseClick();
 				if (flagOnF4) Sleep(50 + (rand() % 5));
@@ -675,10 +675,8 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 			flagOnF4 = false;
 		}
 		if (flagOnF5) {
-			int x = (int)(754.0*d3Scale);
-			int y = (int)(373.0*d3Scale);
 			GetCursorPos(&point);
-			COLORREF cl = getColor(x, y);
+			COLORREF cl = getColor(point.x, point.y);
 			TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), point.x, point.y, GetRValue(cl), GetGValue(cl), GetBValue(cl));
 			flagOnF5 = false;
 		}
