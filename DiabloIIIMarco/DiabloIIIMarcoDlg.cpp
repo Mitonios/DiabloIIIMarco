@@ -230,18 +230,18 @@ void ClickOkButton(double d3Scale) {
 	int g = GetGValue(color);
 	int b = GetBValue(color);
 	TRACE(_T("Button Color R:%d,G:%d,B:%d \r\n"), r, g, b);
-	if (r >= 35 && r <= 48) {
-		if (g >= 5 && g <= 10) {
-			if (b >= 0 && b <= 5) {
+	//if (r >= 35 && r <= 48) {
+	//	if (g >= 5 && g <= 10) {
+	//		if (b >= 0 && b <= 5) {
 				//SetD3Mouse(x, y);
 				//SendD3LeftMouseClick();
 				SendD3Key(VK_RETURN);
 				Sleep(50 + (rand() % 5));
 				SendD3Key(VK_RETURN);
 				Sleep(50 + (rand() % 5));
-			}
-		}
-	}
+	//		}
+	//	}
+	//}
 }
 
 bool CheckBlood(double d3Scale) {
