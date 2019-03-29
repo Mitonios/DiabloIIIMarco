@@ -17,6 +17,7 @@ Các tính năng chính
 - F3: Tự động bấm chuột phải
 - F2: Tự động bấm Hotkey từ 1=>4
 - F4: Tự động Salvage đồ thừa (Cả Legendary Items)
+- F5: Tự động bấm Q (Hồi máu) nếu dưới 50% máu
 
 
 Dev

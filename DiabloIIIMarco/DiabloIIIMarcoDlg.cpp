@@ -230,18 +230,18 @@ void ClickOkButton(double d3Scale) {
 	int g = GetGValue(color);
 	int b = GetBValue(color);
 	TRACE(_T("Button Color R:%d,G:%d,B:%d \r\n"), r, g, b);
-	//if (r >= 35 && r <= 48) {
-	//	if (g >= 5 && g <= 10) {
-	//		if (b >= 0 && b <= 5) {
+	if (r >= 30 && r <= 50) {
+		if (g >= 0 && g <= 15) {
+			if (b >= 0 && b <= 10) {
 				//SetD3Mouse(x, y);
 				//SendD3LeftMouseClick();
 				SendD3Key(VK_RETURN);
 				Sleep(50 + (rand() % 5));
 				SendD3Key(VK_RETURN);
 				Sleep(50 + (rand() % 5));
-	//		}
-	//	}
-	//}
+			}
+		}
+	}
 }
 
 bool CheckBlood(double d3Scale) {
@@ -635,19 +635,19 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 				int xSalvageGold = (int)round(381.0 * d3Scale);
 				if (flagOnF4) SetD3Mouse(xSalvageGold, ySalvage);
 				if (flagOnF4) SendD3LeftMouseClick();
-				if (flagOnF4) Sleep(50 + (rand() % 5));
+				if (flagOnF4) Sleep(100 + (rand() % 5));
 				if (flagOnF4) ClickOkButton(d3Scale);
 
 				int xSalvageBlue = (int)round(318.0 * d3Scale);
 				if (flagOnF4) SetD3Mouse(xSalvageBlue, ySalvage);
 				if (flagOnF4) SendD3LeftMouseClick();
-				if (flagOnF4) Sleep(50 + (rand() % 5));
+				if (flagOnF4) Sleep(100 + (rand() % 5));
 				if (flagOnF4) ClickOkButton(d3Scale);
 
 				int xSalvageGray = (int)round(245 * d3Scale);
 				if (flagOnF4) SetD3Mouse(xSalvageGray, ySalvage);
 				if (flagOnF4) SendD3LeftMouseClick();
-				if (flagOnF4) Sleep(50 + (rand() % 5));
+				if (flagOnF4) Sleep(100 + (rand() % 5));
 				if (flagOnF4) ClickOkButton(d3Scale);
 				//Kiểm tra những ô có item
 				for (int iitem = 0; iitem < 60; iitem++)
@@ -670,7 +670,7 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 					if (flagOnF4) Sleep(50 + (rand() % 5));
 					for (int iitem = 0; iitem < 60; iitem++)
 					{
-						if (xIventoryProcess[iitem] != 0 && xIventoryProcess[iitem] != 0) {
+						if (xIventoryProcess[iitem] != 0 ) {
 							if (flagOnF4) SetD3Mouse(xIventoryArray[iitem], yIventoryArray[iitem]);
 							if (flagOnF4) SendD3LeftMouseClick();
 							if (flagOnF4) Sleep(100 + (rand() % 5));
@@ -688,6 +688,8 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 				if (flagOnF4) SendD3LeftMouseClick();
 				if (flagOnF4) SetD3Mouse(xRepairButton, yRepairButton);
 				if (flagOnF4) SendD3LeftMouseClick();
+
+				SendD3Key(VK_ESCAPE);
 			}
 			flagOnF4 = false;
 		}
