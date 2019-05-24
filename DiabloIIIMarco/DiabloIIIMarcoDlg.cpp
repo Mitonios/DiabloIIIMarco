@@ -25,6 +25,12 @@ struct MyConfig
 	int		skill02Enable;
 	int		skill03Enable;
 	int		skill04Enable;
+	int		emptySlotColorR;
+	int		emptySlotColorG;
+	int		emptySlotColorB;
+	int		buttonOKColorR;
+	int		buttonOKColorG;
+	int		buttonOKColorB;
 };
 
 /************************************************************************/
@@ -38,6 +44,8 @@ bool					flagOnF2 = false;
 bool					flagOnF3 = false;
 bool					flagOnF4 = false;
 bool					flagOnF5 = false;
+bool					flagOnF6 = false;
+bool					flagOnF7 = false;
 int						leftMouseCooldown;
 int						rightMouseCooldown;
 int						skillSlot01Cooldown;
@@ -48,6 +56,8 @@ wchar_t					keySKill01 = 0x31;
 wchar_t					keySKill02 = 0x32;
 wchar_t					keySKill03 = 0x33;
 wchar_t					keySKill04 = 0x34;
+double					buttonOkX = 854.0;
+double					buttonOkY = 373.0;
 HHOOK					hGlobalHook;
 
 
@@ -212,9 +222,9 @@ bool CheckNullInventorySlot(COLORREF color) {
 	int r = GetRValue(color);
 	int g = GetGValue(color);
 	int b = GetBValue(color);
-	if (r >= 12 && r <= 17) {
-		if (g >= 12 && g <= 17) {
-			if (b >= 6 && b <= 13) {
+	if (r >= (myConfig.emptySlotColorR - 5) && r <= (myConfig.emptySlotColorR + 5)) {
+		if (g >= (myConfig.emptySlotColorG -5) && g <= (myConfig.emptySlotColorG + 5)) {
+			if (b >= (myConfig.emptySlotColorB - 5) && b <= (myConfig.emptySlotColorB + 5)) {
 				return true;
 			}
 		}
@@ -223,25 +233,26 @@ bool CheckNullInventorySlot(COLORREF color) {
 }
 
 void ClickOkButton(double d3Scale) {
-	int x = (int)(754.0*d3Scale);
-	int y = (int)(373.0*d3Scale);
+	int x = (int)(buttonOkX*d3Scale);
+	int y = (int)(buttonOkY*d3Scale);
 	COLORREF color = getColor(x, y);
 	int r = GetRValue(color);
 	int g = GetGValue(color);
 	int b = GetBValue(color);
 	TRACE(_T("Button Color R:%d,G:%d,B:%d \r\n"), r, g, b);
-	//if (r >= 35 && r <= 48) {
-	//	if (g >= 5 && g <= 10) {
-	//		if (b >= 0 && b <= 5) {
+	if (r >= (myConfig.buttonOKColorR - 5) && r <= (myConfig.buttonOKColorR + 5)) {
+		if (g >= (myConfig.buttonOKColorG - 5) && g <= (myConfig.buttonOKColorG + 5)) {
+			if (b >= (myConfig.buttonOKColorB - 5) && b <= (myConfig.buttonOKColorB + 5)) {
 				//SetD3Mouse(x, y);
 				//SendD3LeftMouseClick();
+				
 				SendD3Key(VK_RETURN);
 				Sleep(50 + (rand() % 5));
 				SendD3Key(VK_RETURN);
 				Sleep(50 + (rand() % 5));
-	//		}
-	//	}
-	//}
+			}
+		}
+	}
 }
 
 bool CheckBlood(double d3Scale) {
@@ -355,6 +366,12 @@ extern "C" __declspec(dllexport) LRESULT CALLBACK HookProc(int nCode, WPARAM wPa
 			case VK_F5:
 				flagOnF5 = !flagOnF5;
 				break;
+			case VK_F6:
+				flagOnF6 = !flagOnF6;
+				break;
+			case VK_F7:
+				flagOnF7 = !flagOnF7;
+				break;
 			}
 		}
 	}
@@ -442,6 +459,12 @@ BOOL CDiabloIIIMarcoDlg::OnInitDialog()
 	GetDlgItem(IDD_EDIT_SKILL4)->EnableWindow(myConfig.skill04Enable);
 	swprintf_s(buffer, L"%d", myConfig.skillSlot04Time);
 	GetDlgItem(IDD_EDIT_SKILL4)->SetWindowText(buffer);
+
+	swprintf_s(buffer, L"R:%d/G:%d/B:%d", myConfig.emptySlotColorR, myConfig.emptySlotColorG, myConfig.emptySlotColorB);
+	GetDlgItem(IDC_STATIC_EMPTY_SLOT_COLOR)->SetWindowText(buffer);
+
+	swprintf_s(buffer, L"R:%d/G:%d/B:%d", myConfig.buttonOKColorR, myConfig.buttonOKColorG, myConfig.buttonOKColorB);
+	GetDlgItem(IDC_STATIC_BUTTON_OK_COLOR)->SetWindowText(buffer);
 
 	hGlobalHook = SetWindowsHookEx(WH_KEYBOARD_LL, HookProc, GetModuleHandle(NULL), 0);
 	// TODO: Add extra initialization here
@@ -702,6 +725,47 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 			//COLORREF cl = getColor(point.x, point.y);
 			//TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), point.x, point.y, GetRValue(cl), GetGValue(cl), GetBValue(cl));
 			//flagOnF5 = false;
+		}
+
+		if (flagOnF6) {
+			COLORREF cl = getColor(xIventoryArray[0], yIventoryArray[0]);
+			TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), xIventoryArray[0], yIventoryArray[0], GetRValue(cl), GetGValue(cl), GetBValue(cl));
+			myConfig.emptySlotColorR = GetRValue(cl);
+			myConfig.emptySlotColorG = GetGValue(cl);
+			myConfig.emptySlotColorB = GetBValue(cl);
+			SaveConfig();
+
+			wchar_t buffer[1000] = { 0 };
+
+			swprintf_s(buffer, L"R:%d/G:%d/B:%d", myConfig.emptySlotColorR, myConfig.emptySlotColorG, myConfig.emptySlotColorB);
+			GetDlgItem(IDC_STATIC_EMPTY_SLOT_COLOR)->SetWindowText(buffer);
+
+			flagOnF6 = false;
+		}
+
+		if (flagOnF7) {
+			
+			int okX = (int)(buttonOkX * d3Scale);
+			int okY = (int)(buttonOkY * d3Scale);
+
+			//POINT point = { 0 };
+			//GetCursorPos(&point);
+			//TRACE(_T("Color x: %d, y: %d, D: %d \n"), point.x, point.y, d3Scale);
+			//SetD3Mouse(okX, okY);
+
+			COLORREF cl = getColor(okX, okY);
+			TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), okX, okY, GetRValue(cl), GetGValue(cl), GetBValue(cl));
+			myConfig.buttonOKColorR = GetRValue(cl);
+			myConfig.buttonOKColorG = GetGValue(cl);
+			myConfig.buttonOKColorB = GetBValue(cl);
+			SaveConfig();
+
+			wchar_t buffer[1000] = { 0 };
+
+			swprintf_s(buffer, L"R:%d/G:%d/B:%d", myConfig.buttonOKColorR, myConfig.buttonOKColorG, myConfig.buttonOKColorB);
+			GetDlgItem(IDC_STATIC_BUTTON_OK_COLOR)->SetWindowText(buffer);
+
+			flagOnF7 = false;
 		}
 	}
 }

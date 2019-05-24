@@ -22,6 +22,8 @@
 #define IDD_EDIT_SKILL4                 1013
 #define IDC_CHECK_SKILL4                1014
 #define IDC_LIST_LOG                    1016
+#define IDC_STATIC_EMPTY_SLOT_COLOR     1017
+#define IDC_STATIC_BUTTON_OK_COLOR      1018
 
 // Next default values for new objects
 // 
@@ -29,7 +31,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        135
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1017
+#define _APS_NEXT_CONTROL_VALUE         1019
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
