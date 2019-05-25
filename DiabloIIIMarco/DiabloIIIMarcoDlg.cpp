@@ -525,7 +525,7 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 		{
 			flagOnF1 = false;
 			flagOnF2 = false;
-			flagOnF3 = false;
+			flagOnF4 = false;
 		}
 		else {
 			::GetWindowRect(d3Wnd, &d3Rect);
@@ -545,8 +545,8 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 		GetDlgItem(IDD_EDIT_SKILL3)->EnableWindow(!flagOnF2&&myConfig.skill03Enable);
 		GetDlgItem(IDD_EDIT_SKILL4)->EnableWindow(!flagOnF2&&myConfig.skill04Enable);
 
-		GetDlgItem(IDD_EDIT_RIGHTMOUSE_MS)->EnableWindow(!flagOnF3);
-		GetDlgItem(IDC_STATIC_RIGHTMOUSE)->ShowWindow(flagOnF3);
+		GetDlgItem(IDD_EDIT_RIGHTMOUSE_MS)->EnableWindow(!flagOnF4);
+		GetDlgItem(IDC_STATIC_RIGHTMOUSE)->ShowWindow(flagOnF4);
 
 		GetDlgItem(IDC_STATIC_AUTOHEAL)->ShowWindow(flagOnF5);
 
