@@ -31,6 +31,9 @@ struct MyConfig
 	int		buttonOKColorR;
 	int		buttonOKColorG;
 	int		buttonOKColorB;
+	int		salvageColorR;
+	int		salvageColorG;
+	int		salvageColorB;
 };
 
 /************************************************************************/
@@ -240,9 +243,9 @@ void ClickOkButton(double d3Scale) {
 	int g = GetGValue(color);
 	int b = GetBValue(color);
 	TRACE(_T("Button Color R:%d,G:%d,B:%d \r\n"), r, g, b);
-	//if (r >= (myConfig.buttonOKColorR - 5) && r <= (myConfig.buttonOKColorR + 5)) {
-	//	if (g >= (myConfig.buttonOKColorG - 5) && g <= (myConfig.buttonOKColorG + 5)) {
-	//		if (b >= (myConfig.buttonOKColorB - 5) && b <= (myConfig.buttonOKColorB + 5)) {
+	if (r >= (myConfig.buttonOKColorR - 10) && r <= (myConfig.buttonOKColorR + 10)) {
+		if (g >= (myConfig.buttonOKColorG - 10) && g <= (myConfig.buttonOKColorG + 10)) {
+			if (b >= (myConfig.buttonOKColorB - 10) && b <= (myConfig.buttonOKColorB + 10)) {
 				//SetD3Mouse(x, y);
 				//SendD3LeftMouseClick();
 				
@@ -250,9 +253,9 @@ void ClickOkButton(double d3Scale) {
 				Sleep(50 + (rand() % 5));
 				SendD3Key(VK_RETURN);
 				Sleep(50 + (rand() % 5));
-	//		}
-	//	}
-	//}
+			}
+		}
+	}
 }
 
 bool CheckBlood(double d3Scale) {
@@ -369,10 +372,7 @@ extern "C" __declspec(dllexport) LRESULT CALLBACK HookProc(int nCode, WPARAM wPa
 				break;
 			case VK_F8:
 				flagOnF8 = !flagOnF8;
-				break;
-			case VK_F7:
-				flagOnF7 = !flagOnF7;
-				break;
+				break;			
 			}
 		}
 	}
@@ -467,6 +467,8 @@ BOOL CDiabloIIIMarcoDlg::OnInitDialog()
 	swprintf_s(buffer, L"R:%d/G:%d/B:%d", myConfig.buttonOKColorR, myConfig.buttonOKColorG, myConfig.buttonOKColorB);
 	GetDlgItem(IDC_STATIC_BUTTON_OK_COLOR)->SetWindowText(buffer);
 
+	swprintf_s(buffer, L"R:%d/G:%d/B:%d", myConfig.salvageColorR, myConfig.salvageColorG, myConfig.salvageColorB);
+	GetDlgItem(IDC_STATIC_SALVAGE_COLOR)->SetWindowText(buffer);
 	hGlobalHook = SetWindowsHookEx(WH_KEYBOARD_LL, HookProc, GetModuleHandle(NULL), 0);
 	// TODO: Add extra initialization here
 	return TRUE;  // return TRUE  unless you set the focus to a control
@@ -631,11 +633,10 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 				}
 			}
 		}
+		int xTabSalvage = (int)round(518.0 * d3Scale);
+		int yTabSalvage = (int)round(486.0 * d3Scale);
 		//END-Khởi tạo tọa độ hòm đồ
 		if (flagOnF3) {
-			int xTabSalvage = (int)round(518.0 * d3Scale);
-			int yTabSalvage = (int)round(486.0 * d3Scale);
-
 
 			//Stash
 			//TRACE(_T("d3Width: %d, d3Height: %d, d3Scale: %d \n"), d3Width, d3Height, d3Scale);
@@ -646,8 +647,10 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 
 			GetCursorPos(&point);
 			COLORREF cl = getColor(point.x, point.y);
-			TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), point.x, point.y,  GetRValue(cl), GetGValue(cl), GetBValue(cl));
-			if(GetRValue(cl)>=250&& GetRValue(cl) <= 255&& GetGValue(cl)>=190&& GetGValue(cl) <= 198&& GetBValue(cl)>=20&& GetBValue(cl)<=25){
+			//TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), point.x, point.y,  GetRValue(cl), GetGValue(cl), GetBValue(cl));
+			if(GetRValue(cl)>= (myConfig.salvageColorR - 10)&& GetRValue(cl) <= myConfig.salvageColorR + 10 
+				&& GetGValue(cl)>=(myConfig.salvageColorG - 10)&& GetGValue(cl) <= (myConfig.salvageColorG + 10)
+				&& GetBValue(cl)>= (myConfig.salvageColorB - 10) && GetBValue(cl)<= (myConfig.salvageColorB + 10)){
 			//if (GetRValue(cl) == 252 && GetGValue(cl) == 195 && GetBValue(cl) == 21) {
 				//Đúng màu thì làm tiếp
 				int			xIventoryProcess[60] = { 0 };
@@ -674,34 +677,23 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 				if (flagOnF3) Sleep(100 + (rand() % 5));
 				if (flagOnF3) ClickOkButton(d3Scale);
 				//Kiểm tra những ô có item
+				if (flagOnF3) SetD3Mouse(xSalvage, ySalvage);
+				if (flagOnF3) SendD3LeftMouseClick();
+				if (flagOnF3) Sleep(50 + (rand() % 5));
 				for (int iitem = 0; iitem < 60; iitem++)
 				{
 					//Kiểm tra những ô có item
 					cl = getColor(xIventoryArray[iitem], yIventoryArray[iitem]);
 					//SetD3Mouse(xIventoryArray[iitem], yIventoryArray[iitem]);
 					if (!CheckNullInventorySlot(cl)) {
-						xIventoryProcess[iitem] = xIventoryArray[iitem];
-						yIventoryProcess[iitem] = yIventoryArray[iitem];
-						process = true;
+						if (flagOnF3) SetD3Mouse(xIventoryArray[iitem], yIventoryArray[iitem]);
+						if (flagOnF3) SendD3LeftMouseClick();
+						if (flagOnF3) Sleep(100 + (rand() % 5));
+						if (flagOnF3) ClickOkButton(d3Scale);
 						//TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), xIventoryArray[iitem], yIventoryArray[iitem], GetRValue(cl), GetGValue(cl), GetBValue(cl));
 					}
 				}
-				//Xử lý những ô có item
-				if (process == true) {
-					//Sal các loại Legend
-					if (flagOnF3) SetD3Mouse(xSalvage, ySalvage);
-					if (flagOnF3) SendD3LeftMouseClick();
-					if (flagOnF3) Sleep(50 + (rand() % 5));
-					for (int iitem = 0; iitem < 60; iitem++)
-					{
-						if (xIventoryProcess[iitem] != 0 ) {
-							if (flagOnF3) SetD3Mouse(xIventoryArray[iitem], yIventoryArray[iitem]);
-							if (flagOnF3) SendD3LeftMouseClick();
-							if (flagOnF3) Sleep(100 + (rand() % 5));
-							if (flagOnF3) ClickOkButton(d3Scale);
-						}
-					}
-				}
+				
 				//Xử lý xong sửa đồ
 				int xRepairTable = 517 * d3Scale;
 				int yRepairTable = 620 * d3Scale;
@@ -731,25 +723,12 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 		}
 
 		if (flagOnF7) {
-			COLORREF cl = getColor(xIventoryArray[0], yIventoryArray[0]);
-
-			SetD3Mouse(xIventoryArray[0], yIventoryArray[0]);
-			TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), xIventoryArray[0], yIventoryArray[0], GetRValue(cl), GetGValue(cl), GetBValue(cl));
-			myConfig.emptySlotColorR = GetRValue(cl);
-			myConfig.emptySlotColorG = GetGValue(cl);
-			myConfig.emptySlotColorB = GetBValue(cl);
-			SaveConfig();
-
-			wchar_t buffer[1000] = { 0 };
-
-			swprintf_s(buffer, L"R:%d/G:%d/B:%d", myConfig.emptySlotColorR, myConfig.emptySlotColorG, myConfig.emptySlotColorB);
-			GetDlgItem(IDC_STATIC_EMPTY_SLOT_COLOR)->SetWindowText(buffer);
+			
 
 			flagOnF7 = false;
 		}
 
-		if (flagOnF8) {
-			
+		if (flagOnF8) {			
 			int okX = (int)(buttonOkX * d3Scale);
 			int okY = (int)(buttonOkY * d3Scale);
 
@@ -757,18 +736,37 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 			//GetCursorPos(&point);
 			//TRACE(_T("Color x: %d, y: %d, D: %d \n"), point.x, point.y, d3Scale);
 			SetD3Mouse(okX, okY);
-
 			COLORREF cl = getColor(okX, okY);
-			TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), okX, okY, GetRValue(cl), GetGValue(cl), GetBValue(cl));
+			//TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), okX, okY, GetRValue(cl), GetGValue(cl), GetBValue(cl));
 			myConfig.buttonOKColorR = GetRValue(cl);
 			myConfig.buttonOKColorG = GetGValue(cl);
 			myConfig.buttonOKColorB = GetBValue(cl);
 			SaveConfig();
-
 			wchar_t buffer[1000] = { 0 };
-
 			swprintf_s(buffer, L"R:%d/G:%d/B:%d", myConfig.buttonOKColorR, myConfig.buttonOKColorG, myConfig.buttonOKColorB);
 			GetDlgItem(IDC_STATIC_BUTTON_OK_COLOR)->SetWindowText(buffer);
+
+			SetD3Mouse(xIventoryArray[0], yIventoryArray[0]);
+			COLORREF cl2 = getColor(xIventoryArray[0], yIventoryArray[0]);
+			//TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), xIventoryArray[0], yIventoryArray[0], GetRValue(cl), GetGValue(cl), GetBValue(cl));
+			myConfig.emptySlotColorR = GetRValue(cl2);
+			myConfig.emptySlotColorG = GetGValue(cl2);
+			myConfig.emptySlotColorB = GetBValue(cl2);
+			SaveConfig();
+			wchar_t buffer2[1000] = { 0 };
+			swprintf_s(buffer2, L"R:%d/G:%d/B:%d", myConfig.emptySlotColorR, myConfig.emptySlotColorG, myConfig.emptySlotColorB);
+			GetDlgItem(IDC_STATIC_EMPTY_SLOT_COLOR)->SetWindowText(buffer2);
+
+			SetD3Mouse(xTabSalvage,yTabSalvage);
+			COLORREF cl3 = getColor(xTabSalvage, yTabSalvage);
+			//TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), xIventoryArray[0], yIventoryArray[0], GetRValue(cl), GetGValue(cl), GetBValue(cl));
+			myConfig.salvageColorR = GetRValue(cl3);
+			myConfig.salvageColorG = GetGValue(cl3);
+			myConfig.salvageColorB = GetBValue(cl3);
+			SaveConfig();
+			wchar_t buffer3[1000] = { 0 };
+			swprintf_s(buffer3, L"R:%d/G:%d/B:%d", myConfig.salvageColorR, myConfig.salvageColorG, myConfig.salvageColorB);
+			GetDlgItem(IDC_STATIC_SALVAGE_COLOR)->SetWindowText(buffer3);
 
 			flagOnF8 = false;
 		}
