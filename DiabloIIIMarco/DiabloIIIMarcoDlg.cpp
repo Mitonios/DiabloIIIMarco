@@ -367,9 +367,9 @@ extern "C" __declspec(dllexport) LRESULT CALLBACK HookProc(int nCode, WPARAM wPa
 				rightMouseCooldown = 99999;
 				flagOnF4 = !flagOnF4;
 				break;
-			case VK_F5:
-				flagOnF5 = !flagOnF5;
-				break;
+			//case VK_F5:
+			//	flagOnF5 = !flagOnF5;
+			//	break;
 			case VK_F8:
 				flagOnF8 = !flagOnF8;
 				break;			
@@ -550,7 +550,6 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 		GetDlgItem(IDD_EDIT_RIGHTMOUSE_MS)->EnableWindow(!flagOnF4);
 		GetDlgItem(IDC_STATIC_RIGHTMOUSE)->ShowWindow(flagOnF4);
 
-		GetDlgItem(IDC_STATIC_AUTOHEAL)->ShowWindow(flagOnF5);
 
 		if (flagOnF1) {
 			leftMouseCooldown += timerDelay;
@@ -735,7 +734,7 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 			//POINT point = { 0 };
 			//GetCursorPos(&point);
 			//TRACE(_T("Color x: %d, y: %d, D: %d \n"), point.x, point.y, d3Scale);
-			SetD3Mouse(okX, okY);
+			//SetD3Mouse(okX, okY);
 			COLORREF cl = getColor(okX, okY);
 			//TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), okX, okY, GetRValue(cl), GetGValue(cl), GetBValue(cl));
 			myConfig.buttonOKColorR = GetRValue(cl);
@@ -746,7 +745,7 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 			swprintf_s(buffer, L"R:%d/G:%d/B:%d", myConfig.buttonOKColorR, myConfig.buttonOKColorG, myConfig.buttonOKColorB);
 			GetDlgItem(IDC_STATIC_BUTTON_OK_COLOR)->SetWindowText(buffer);
 
-			SetD3Mouse(xIventoryArray[0], yIventoryArray[0]);
+			//SetD3Mouse(xIventoryArray[0], yIventoryArray[0]);
 			COLORREF cl2 = getColor(xIventoryArray[0], yIventoryArray[0]);
 			//TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), xIventoryArray[0], yIventoryArray[0], GetRValue(cl), GetGValue(cl), GetBValue(cl));
 			myConfig.emptySlotColorR = GetRValue(cl2);
@@ -757,7 +756,7 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 			swprintf_s(buffer2, L"R:%d/G:%d/B:%d", myConfig.emptySlotColorR, myConfig.emptySlotColorG, myConfig.emptySlotColorB);
 			GetDlgItem(IDC_STATIC_EMPTY_SLOT_COLOR)->SetWindowText(buffer2);
 
-			SetD3Mouse(xTabSalvage,yTabSalvage);
+			//SetD3Mouse(xTabSalvage,yTabSalvage);
 			COLORREF cl3 = getColor(xTabSalvage, yTabSalvage);
 			//TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), xIventoryArray[0], yIventoryArray[0], GetRValue(cl), GetGValue(cl), GetBValue(cl));
 			myConfig.salvageColorR = GetRValue(cl3);
