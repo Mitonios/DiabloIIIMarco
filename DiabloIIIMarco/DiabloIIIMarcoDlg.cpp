@@ -360,8 +360,7 @@ extern "C" __declspec(dllexport) LRESULT CALLBACK HookProc(int nCode, WPARAM wPa
 				break;
 			case VK_F3:
 				flagOnF3 = !flagOnF3;
-				TRACE(_T("Salvage\r\n"));
-				
+				TRACE(_T("Salvage\r\n"));				
 				break;
 			case VK_F4:
 				rightMouseCooldown = 99999;
@@ -370,9 +369,13 @@ extern "C" __declspec(dllexport) LRESULT CALLBACK HookProc(int nCode, WPARAM wPa
 			//case VK_F5:
 			//	flagOnF5 = !flagOnF5;
 			//	break;
+			case VK_F7:
+				flagOnF7 = !flagOnF8;
+				break;
 			case VK_F8:
 				flagOnF8 = !flagOnF8;
-				break;			
+				break;		
+
 			}
 		}
 	}
@@ -722,8 +725,18 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 		}
 
 		if (flagOnF7) {
-			
+			int buttonX = 563;
+			int buttonY = 1567;
 
+			int topRowY = 795;
+			
+			SetD3Mouse(buttonX, buttonY);
+			SendD3LeftMouseClick();
+			Sleep(500 + (rand() % 5));
+			SendD3LeftMouseClick();
+			SetD3Mouse(buttonX, topRowY);
+			Sleep(1500 + (rand() % 5));
+			SendD3LeftMouseClick();
 			flagOnF7 = false;
 		}
 
