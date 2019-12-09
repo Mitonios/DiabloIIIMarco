@@ -729,14 +729,14 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 			int buttonY = 1567;
 
 			int topRowY = 795;
-			
+			SendD3LeftMouseClick();
+			Sleep(100 + (rand() % 5));
 			SetD3Mouse(buttonX, buttonY);
 			SendD3LeftMouseClick();
 			Sleep(500 + (rand() % 5));
 			SendD3LeftMouseClick();
 			SetD3Mouse(buttonX, topRowY);
-			Sleep(1500 + (rand() % 5));
-			SendD3LeftMouseClick();
+			
 			flagOnF7 = false;
 		}
 
