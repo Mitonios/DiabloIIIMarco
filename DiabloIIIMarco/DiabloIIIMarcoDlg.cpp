@@ -366,11 +366,11 @@ extern "C" __declspec(dllexport) LRESULT CALLBACK HookProc(int nCode, WPARAM wPa
 				rightMouseCooldown = 99999;
 				flagOnF4 = !flagOnF4;
 				break;
-			//case VK_F5:
-			//	flagOnF5 = !flagOnF5;
-			//	break;
+			case VK_F5:
+				flagOnF5 = !flagOnF5;
+				break;
 			case VK_F7:
-				flagOnF7 = !flagOnF8;
+				flagOnF7 = !flagOnF7;
 				break;
 			case VK_F8:
 				flagOnF8 = !flagOnF8;
@@ -711,24 +711,24 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 			}
 			flagOnF3 = false;
 		}
-		if (flagOnF5) {
+		if (flagOnF5) {//Check current mouse
 			//SendD3Key(0x51);
-			if (!CheckBlood(d3Scale)) {
+			/*if (!CheckBlood(d3Scale)) {
 				SendD3Key(0x51);
 				TRACE(_T("Hoi mau \r\n"));
-			}
+			}*/
 			
-			//GetCursorPos(&point);
-			//COLORREF cl = getColor(point.x, point.y);
-			//TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), point.x, point.y, GetRValue(cl), GetGValue(cl), GetBValue(cl));
-			//flagOnF5 = false;
+			GetCursorPos(&point);
+			COLORREF cl = getColor(point.x, point.y);
+			TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), point.x, point.y, GetRValue(cl), GetGValue(cl), GetBValue(cl));
+			flagOnF5 = false;
 		}
 
 		if (flagOnF7) {
-			int buttonX = 563;
-			int buttonY = 1567;
+			int buttonX = (int)round(267 * d3Scale);
+			int buttonY = (int)round(772 * d3Scale);
 
-			int topRowY = 795;
+			int topRowY = (int)round(400 * d3Scale);
 			SendD3LeftMouseClick();
 			Sleep(100 + (rand() % 5));
 			SetD3Mouse(buttonX, buttonY);
