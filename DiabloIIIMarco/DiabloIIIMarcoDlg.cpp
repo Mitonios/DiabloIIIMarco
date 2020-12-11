@@ -736,7 +736,7 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 			if (flagOnF7) Sleep(500 + (rand() % 5));
 			if (flagOnF7) SendD3LeftMouseClick();
 			if (flagOnF7) SetD3Mouse(buttonX, topRowY);
-			//if (flagOnF7) Sleep(1000 + (rand() % 5));
+			if (flagOnF7) Sleep(1000 + (rand() % 5));
 			//flagOnF7 = false;
 		}
 
