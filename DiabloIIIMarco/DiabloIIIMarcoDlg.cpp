@@ -242,7 +242,7 @@ void ClickOkButton(double d3Scale) {
 	int r = GetRValue(color);
 	int g = GetGValue(color);
 	int b = GetBValue(color);
-	TRACE(_T("Button Color R:%d,G:%d,B:%d \r\n"), r, g, b);
+	//TRACE(_T("Button Color R:%d,G:%d,B:%d \r\n"), r, g, b);
 	if (r >= (myConfig.buttonOKColorR - 10) && r <= (myConfig.buttonOKColorR + 10)) {
 		if (g >= (myConfig.buttonOKColorG - 10) && g <= (myConfig.buttonOKColorG + 10)) {
 			if (b >= (myConfig.buttonOKColorB - 10) && b <= (myConfig.buttonOKColorB + 10)) {
@@ -360,7 +360,7 @@ extern "C" __declspec(dllexport) LRESULT CALLBACK HookProc(int nCode, WPARAM wPa
 				break;
 			case VK_F3:
 				flagOnF3 = !flagOnF3;
-				TRACE(_T("Salvage\r\n"));				
+				//TRACE(_T("Salvage\r\n"));				
 				break;
 			/*case VK_F4:
 				rightMouseCooldown = 99999;
@@ -720,7 +720,7 @@ void CDiabloIIIMarcoDlg::OnTimer(UINT_PTR nIdEvent)
 			
 			GetCursorPos(&point);
 			COLORREF cl = getColor(point.x, point.y);
-			TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), point.x, point.y, GetRValue(cl), GetGValue(cl), GetBValue(cl));
+			//TRACE(_T("Color x: %d, y: %d, R: %d, G: %d, B: %d \n"), point.x, point.y, GetRValue(cl), GetGValue(cl), GetBValue(cl));
 			flagOnF5 = false;
 		}
 
