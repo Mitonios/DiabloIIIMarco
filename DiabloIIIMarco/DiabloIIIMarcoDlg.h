@@ -40,13 +40,17 @@ public:
 	afx_msg void LoadConfig();
 	afx_msg void OnKillFocusEditLeftMouseMs();
 	afx_msg void OnKillFocusEditRightMouseMs();
+
 	void OnKillFocusEditSkill1Ms();
 	void OnKillFocusEditSkill2Ms();
 	void OnKillFocusEditSkill3Ms();
 	void OnKillFocusEditSkill4Ms();
+	void OnKillFocusEditSkill5Ms();
+
 	afx_msg void OnBnClickedCheckSkill1();
 	void OnBnClickedCheckSkill2();
 	void OnBnClickedCheckSkill3();
 	void OnBnClickedCheckSkill4();
+	void OnBnClickedCheckSkill5();
 };
 
